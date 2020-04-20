@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:AppTextAnalytics.Converters"
+             xmlns:behaviors="clr-namespace:AppTextAnalytics.Behaviors"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:graph="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}"
+             mc:Ignorable="d"
+             x:Class="AppTextAnalytics.Views.TextAnalyticsPage"
+             Title="Text Analytics "
+             Padding="0,5,0,0"
+             BackgroundColor="#004D9F"
+             NavigationPage.HasNavigationBar="false"
+             >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ListOfStringToOneStringConverter x:Key="ListOfStringToOneStringConverter"/>
+            <Style x:Key="PancakeStyle" TargetType="yummy:PancakeView">
+                <Setter Property="CornerRadius" Value="24" />
+                <Setter Property="HasShadow" Value="True" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+                <Setter Property="Margin" Value="10, 20" />
+            </Style>
+            <Style TargetType="CarouselView">
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+            </Style>
+
+            <Style x:Key="DrinkTitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="{StaticResource MontserratBold}" />
+                <Setter Property="Margin" Value="12, 0" />
+            </Style>
+
+            <Style x:Key="DrinkDescriptionStyle" TargetType="Label" BasedOn="{StaticResource DrinkTitleStyle}">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="FontFamily" Value="{StaticResource MontserratRegular}" />
+            </Style>
+
+            <Style x:Key="BuyButtonStyle" TargetType="Button">
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <!--<Setter Property="VerticalOptions" Value="EndAndExpand" />-->
+                <Setter Property="BackgroundColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="FontFamily" Value="{StaticResource MontserratRegular}" />
+            </Style>
+
+            <Style x:Key="DrinkImagePanelStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="46, 90, 46, 46" />
+            </Style>
+
+            <Style x:Key="DrinkImageStyle" TargetType="Image">
+                <Setter Property="Margin" Value="12" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView BindingContext="{Binding TextAnalytics}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout>
+                <!--Header-->
+                <Grid Margin="0,0,0,0" Padding="0,0,0,0">
+                    <StackLayout Margin="20,0,20,0" Spacing="5">
+                        <Label
+                        FontAttributes="Bold"
+                        FontSize="24"
+                        HorizontalOptions="StartAndExpand"
+                        Text="Analizar texto"
+                        TextColor="#B3D4F7"
+                        VerticalOptions="StartAndExpand"
+                        />
+                    </StackLayout>
+                    <Image 
+                    HorizontalOptions="EndAndExpand"
+                    Source="bgImage"
+                    WidthRequest="50" />
+                </Grid>
+                <!--Section url path-->
+                <yummy:PancakeView                        
+                    Margin="0,0,0,0"
+                    Padding="10,0,0,0"
+                    BackgroundColor="White"
+                    BorderThickness="1"
+                    CornerRadius="25"                   
+                    VerticalOptions="Start">
+                    <StackLayout Orientation="Vertical">
+                        <Editor
+                            FontSize="15"
+                            HorizontalOptions="FillAndExpand"
+                            Keyboard="Chat"
+                            Placeholder="Ingresar texto "
+                            PlaceholderColor="#002144"
+                            TextColor="#484848"
+                            HeightRequest="100"
+                            Margin="10,10,10,10"                            
+                            Text="{Binding TextAnalyse}"/>
+                        <!--section button-->
+
+                    </StackLayout>
+                </yummy:PancakeView>
+                <Button Text="Analyse" VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand" TextColor="#1a237e" BackgroundColor="White" CornerRadius="20"                                 
+                    Command="{Binding AnalyseAllTextCommand}"
+                    IsVisible="{Binding IsVisibleAnalyse}"/>
+                <ActivityIndicator HeightRequest="10" Color="White" IsRunning = "{Binding IsBusy}" IsEnabled="{Binding IsBusy}" IsVisible="{Binding IsBusy}"/>
+
+                <yummy:PancakeView               
+                Margin="0,10,0,0"
+                Padding="0,0,0,0"
+                BackgroundColor="White"
+                CornerRadius="40,40,0,0"
+                VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <!--section preview-->
+                        <yummy:PancakeView
+                            IsEnabled="{Binding IsVisiblePreview}"
+                            IsVisible="{Binding IsVisiblePreview}"
+                            BorderThickness="1"
+                            CornerRadius="25.25,25,25"
+                            VerticalOptions="Start"
+                            Padding="10,10,10,10"
+                            >
+                            <StackLayout>
+                                <yummy:PancakeView Padding="10,10,10,0">
+                                    <StackLayout  Margin="0,0" IsVisible="True" >
+                                        <Label Text="Analisis:" TextColor="Black" FontAttributes="Bold" FontSize="16"></Label>
+                                        <Label Text = "{Binding ErrorMessage}"  TextColor="Red" FontSize="16" />
+                                        <Label Text = "{Binding ResultAnalyse.Language, StringFormat='Lenguaje: {0:F0}'}" 
+                                                   TextColor="Black" FontSize="16">
+                                        </Label>
+                                        <Label Text = "{Binding ResultAnalyse.KeyPhrases, StringFormat='Frase Clave: {0:F0}'}" 
+                                                   TextColor="Navy" 
+                                                   FontSize="16">
+                                        </Label>
+                                        <Label Text = "{Binding ResultAnalyse.OpinionGeneral, StringFormat='Opinion: {0:F0}'}" 
+                                                   TextColor="Navy" 
+                                                   FontSize="16">
+                                        </Label>
+                                        <StackLayout Orientation="Horizontal" >
+                                            <Label VerticalOptions="Start" Text = "{Binding ResultAnalyse.OpinionGeneralPositiva, StringFormat='Positivo: {0:F0}'}" 
+                                                   TextColor="Navy" 
+                                                   FontSize="16"
+                                                       HorizontalOptions="CenterAndExpand">
+                                            </Label>
+                                            <Label Text="{Binding ResultAnalyse.OpinionGeneralNeutral, StringFormat='Neutral: {0:F0}'}" 
+                                                   TextColor="Navy" 
+                                                   FontSize="16"
+                                                       HorizontalOptions="CenterAndExpand">
+                                            </Label>
+                                            <Label Text="{Binding ResultAnalyse.OpinionGeneralNegativa, StringFormat='Negativo: {0:F0}'}" 
+                                                   TextColor="Navy" 
+                                                   FontSize="16"
+                                                   HorizontalOptions="CenterAndExpand">
+                                            </Label>
+
+                                        </StackLayout>
+                                        <Label Text="{Binding ResultAnalyse.EntidadesNombre, StringFormat='Entidades: {0:F0}'}" 
+                                                           TextColor="Navy" 
+                                                           FontSize="16">
+                                        </Label>
+                                        <Button Text = "OK" BackgroundColor="#1a237e" TextColor="White" CornerRadius="10" IsVisible="{Binding IsVisibleEndPreview}" Command="{Binding EndAnalyseImageStreamCommand}"/>
+                                    </StackLayout>
+                                </yummy:PancakeView>
+                            </StackLayout>
+                        </yummy:PancakeView>
+                        <StackLayout>
+                            <Grid>
+                                <CarouselView
+                            x:Name="Carousel" 
+                            ItemsSource="{Binding ListAnalyse}" 
+                            HeightRequest="500"
+                            PeekAreaInsets="0,0,5,0"
+                            EmptyView="No items."
+                            >
+
+                                    <CarouselView.Behaviors>
+                                        <behaviors:CarouselViewParallaxBehavior ParallaxOffset="200"/>
+                                    </CarouselView.Behaviors>
+                                    <CarouselView.ItemsLayout>
+                                        <LinearItemsLayout  
+                                    Orientation="Horizontal"  
+                                    SnapPointsAlignment="Center"  
+                                    SnapPointsType="MandatorySingle" />
+                                    </CarouselView.ItemsLayout>
+                                    <CarouselView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid 
+                                       >
+                                                <Grid>
+                                                    <yummy:PancakeView 
+                                                BackgroundGradientStartColor="{Binding Color}" 
+                                                BackgroundGradientEndColor="{StaticResource BlackColor}" 
+                                                Style="{StaticResource PancakeStyle}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="100" />
+                                                            </Grid.RowDefinitions>
+                                                            <Grid Margin="0, 48, 0, 12">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="*" />
+                                                                </Grid.RowDefinitions>
+                                                                <StackLayout Grid.Row="0" >
+                                                                    <Label  
+                                                                     FontSize="14"
+                                                                    TextColor="White"
+                                                                    Style="{StaticResource DrinkDescriptionStyle}" >
+                                                                        <Label.FormattedText>
+                                                                            <FormattedString>
+                                                                                <Span Text="Opinión:" />
+                                                                                <Span Text="{Binding OpinionGeneral}"/>
+                                                                            </FormattedString>
+                                                                        </Label.FormattedText>
+                                                                    </Label>
+                                                                    <graph:ChartView  HeightRequest="100" x:Name="chartView" Chart ="{Binding DataChart}" ></graph:ChartView>
+                                                                </StackLayout>
+                                                              
+                                                                <StackLayout Grid.Row="1" Orientation="Vertical">
+                                                                    <StackLayout Orientation="Horizontal">
+                                                                        <Label Style="{StaticResource DrinkDescriptionStyle}"
+                                                                                FontSize="14"
+                                                                                 TextColor="White"
+                                                                               >
+                                                                            <Label.FormattedText                                                                            
+                                                                                >
+                                                                                <FormattedString>
+                                                                                    <Span Text="Positivo:" />
+                                                                                    <Span Text="{Binding OpinionGeneralPositiva}"/>
+                                                                                    <Span Text="%"/>
+                                                                                </FormattedString>
+                                                                            </Label.FormattedText>
+                                                                        </Label>
+                                                                        <Label Style="{StaticResource DrinkDescriptionStyle}"
+                                                                                FontSize="14"
+                                                                                 TextColor="White">
+                                                                            <Label.FormattedText>
+                                                                                <FormattedString>
+                                                                                    <Span Text="Neutral:" />
+                                                                                    <Span Text="{Binding OpinionGeneralNeutral}"/>
+                                                                                    <Span Text="%"/>
+                                                                                </FormattedString>
+                                                                            </Label.FormattedText>
+                                                                        </Label>
+                                                                        <Label Style="{StaticResource DrinkDescriptionStyle}"
+                                                                                FontSize="14"
+                                                                                 TextColor="White">
+                                                                            <Label.FormattedText>
+                                                                                <FormattedString>
+                                                                                    <Span Text="Negativo:" />
+                                                                                    <Span Text="{Binding OpinionGeneralNegativa}"/>
+                                                                                    <Span Text="%"/>
+                                                                                </FormattedString>
+                                                                            </Label.FormattedText>
+                                                                        </Label>
+                                                                    </StackLayout>
+
+                                                                </StackLayout>
+                                                                <Label  
+                                                                    Grid.Row="2" 
+                                                                    Style="{StaticResource DrinkDescriptionStyle}"
+                                                                    FontSize="14"
+                                                                    TextColor="White"
+                                                                    >
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Lenguaje:" />
+                                                                            <Span Text="{Binding Language}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                                <Label  
+                                                                    Grid.Row="3" 
+                                                                    Style="{StaticResource DrinkDescriptionStyle}" >
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Entidad:" />
+                                                                            <Span Text="{Binding EntidadesNombre}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                                <Label  
+                                                                    Grid.Row="4"    
+                                                                    Style="{StaticResource DrinkDescriptionStyle}">
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Frases Claves:" />
+                                                                            <Span Text="{Binding KeyPhrases}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                                <Label  
+                                                                    Grid.Row="5" 
+                                                                    Style="{StaticResource DrinkDescriptionStyle}" >
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Texto:" />
+                                                                            <Span Text="{Binding TextAnalyse}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                            </Grid>
+                                                            <Grid 
+                                                        Grid.Row="1" 
+                                                        BackgroundColor="{StaticResource WhiteColor}">
+                                                                <StackLayout Orientation="Horizontal">
+                                                                    <Button 
+                                                            TextColor="Black" 
+                                                            BorderColor="{Binding Color}"  
+                                                            Text="{Binding CreateDateString}" 
+                                                            Style="{StaticResource BuyButtonStyle}"
+                                                                    HorizontalOptions="CenterAndExpand">
+
+                                                                    </Button>
+                                                                    <Image 
+                                                                    HeightRequest="30" 
+                                                                    Source="icon_flecha" 
+                                                                    WidthRequest="30"
+                                                                    HorizontalOptions="CenterAndExpand">
+                                                                    </Image>
+                                                                </StackLayout>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </yummy:PancakeView>
+                                                </Grid>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CarouselView.ItemTemplate>
+                                </CarouselView>
+                            </Grid>
+                        </StackLayout>
+                    </StackLayout>
+                </yummy:PancakeView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

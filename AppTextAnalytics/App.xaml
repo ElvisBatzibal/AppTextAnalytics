@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:infra="clr-namespace:AppTextAnalytics.Infrastructure"
+             mc:Ignorable="d"
+             
+             x:Class="AppTextAnalytics.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--Locator-->
+            <infra:InstanceLocator x:Key="Locator" />
+            <!--Parameters-->
+            <!--<x:String x:Key="UrlApi">http://190.111.7.219</x:String>-->            
+            <!--Estilos de Perfil-->
+            <!--<Style x:Key="StProfileImage" TargetType="CachedImage">
+                <Setter Property="HeightRequest"    Value="40"/>
+                <Setter Property="WidthRequest"     Value="40"/>
+                <Setter Property="TranslationY"     Value="90"/>
+                <Setter Property="BackgroundColor"  Value="Transparent"/>
+                <Setter Property="Margin"           Value="0,0,0,20"/>
+            </Style>-->
+
+            <Style x:Key="stlContactBtn" TargetType="Button">
+                <Setter Property="TranslationY"     Value="-50"/>
+                <Setter Property="TranslationX"     Value="45"/>
+                <Setter Property="BackgroundColor"  Value="#2193f3"/>
+                <Setter Property="WidthRequest"     Value="56"/>
+                <Setter Property="HeightRequest"    Value="56"/>
+                <Setter Property="CornerRadius"     Value="28"/>
+            </Style>
+
+            <Style x:Key="stlBoardTitle" TargetType="Label">
+                <Setter Property="Padding"           Value="0,30,0,5"/>
+                <Setter Property="TextColor"         Value="#a5a2a2"/>
+                <Setter Property="FontSize"          Value="16"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="stlBoardDesc" TargetType="Label">
+                <Setter Property="FontAttributes"    Value="Bold"/>
+                <Setter Property="FontSize"          Value="16" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="stlMainFrame" TargetType="Frame">
+                <Setter Property="TranslationY"    Value="{OnPlatform iOS='-150', Android='-33'}"/>
+                <Setter Property="HeightRequest"   Value="{OnPlatform iOS='120', Android='228'}"/>
+                <Setter Property="HasShadow"       Value="False" />
+            </Style>
+
+            <!-- FOR CAROUSEL   -->
+            <!-- COLORS -->
+            <Color x:Key="WhiteColor">#FFFFFF</Color>
+            <Color x:Key="BlackColor">#FFFFFF</Color>
+
+            <!--<Color x:Key="BlackColor">#89023e</Color>-->
+
+            <!-- FONTS -->
+            <OnPlatform x:Key="MontserratRegular"
+                        x:TypeArguments="x:String"
+                        Android="Montserrat-Regular.ttf#Montserrat"
+                        iOS="Montserrat-Regular" />
+
+
+            <OnPlatform x:Key="MontserratBold"
+                        x:TypeArguments="x:String"
+                        Android="Montserrat-Bold.ttf#Montserrat"
+                        iOS="Montserrat-Bold" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
